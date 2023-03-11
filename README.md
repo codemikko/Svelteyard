@@ -1,5 +1,3 @@
-# Svelteyard: How it's Done!
-
 I get alot of people from the Svelte Community on Reddit asking about my method for using Lanyard, getting my Discord Presence and having it displayed on my website. Well, lucky for you, Im in the business where I share alot of my opensource scripts. 
 
 I want to add that I will not be the first to claim this because not that I am just now learning svelte framework, I felt if Svelte was part HTML, how in Sam Hell it would be hard to do this. I searched for 3 days straight and could not get a straight answer which is what led to this point here. Once I slightly did a bunch of testing just to find out, theres only a few steps to do this. 
@@ -42,25 +40,19 @@ Remember `api.lanyard.rest/v1/users/:your_id`? Yup.
 
 Ok to the last part which is the fun part!
 
-## Sveltekit + Javascript
+## Sveltekit, HTML & Tailwind
 
 Codes very simple guys, just copy this if your running svelte/sveltekit, its so simple, youll see:
 This would go at the top of your example.svelte page where your going to add the HTML bit of it:
 
     
     <script>
-      import Head from "$lib/components/layout/Head.svelte";
-      import Blogs from "$lib/components/Blogs.svelte";
-      import { user } from "../lib/config.js";
-      import { onMount } from "svelte";
+      import { onMount } from 'svelte';
     
       let userPresence = {};
-      const SPOTIFY_ICON = "src/spotify.png"; // set the path to your spotify icon
     
       async function fetchPresence() {
-        const res = await fetch(
-          "https://api.lanyard.rest/v1/users/625796542456004639"
-        );
+        const res = await fetch('https://api.lanyard.rest/v1/users/625796542456004639');
         if (res.ok) {
           userPresence = await res.json();
           console.log(userPresence); // add this line for debugging
@@ -69,18 +61,11 @@ This would go at the top of your example.svelte page where your going to add the
     
       onMount(() => {
         fetchPresence();
-        // poll the API every 10 seconds
         setInterval(fetchPresence, 10000);
       });
     
-      export let data;
-      let posts = data.posts;
-    
-      // check if the user is currently listening to Spotify
       $: currentActivity = userPresence?.data?.spotify?.timestamps?.start;
-    
-      // get the details of the currently playing song
-      $: currentSong = userPresence?.data?.spotify?.song;
+      $: currentSong = userPresence?.data?.spotify?.song ?? "";
     </script>
 
 And add the rest of the code where you would want your roses to grow and smell good just like the image below:
@@ -90,101 +75,62 @@ And add the rest of the code where you would want your roses to grow and smell g
 **Prettier 2.8.4**
 [Playground link](https://prettier.io/playground/#N4Igxg9gdgLgprEAuEAdG7M2AYgJYBmABAK4DOcATgAqVwVRhwB0AJgIYzsC+qUWA7PmLkqtegiZtO7ZuzAw8ANzgB9aKtZ4ykSq030A1jAgAHIgB8LpCjToMpHLnIXK1GrToh7VAWwgARngANnC8-BiRgriENmL2kixOssHa8FB4UADmqiaqZKYQigQAnuGCFdgAAgAWML7BRKxwkM0AqgBKAJIAFKJ2EoxJMswFRYQlzDCU8oaqJJTBAJTlUWtYADxaSkRgwexkZAC8qCAEoQAeRHjwvmQAtEywVEQF8nD3F-cATESUECQoM1WPdfKwiPALjB7gB3Go3OBEXzQgAsr1M73uJXuADZTgA+PiVSobcx7A7HU6Q6FkXxEAjQaEBCDBcHU+5ZGbYnEABh5RACwQgYEMBK6AHI6QAZNIITJZCEQCBIDYAelMhIixLWGwClCIqs12sEGzwviyRPWVqwZEoYCOwH64gcw2cY2Kk3YwQCJF8qnYlBg80Wq2Nay9MBOIAAgt7fUQAxg0FrrVbyYcozV7gBGNEwnNo-6A4H3AgkYKNc5wL5kGqUTKGe780EBe4AVlOlrD6ENRJTYa2yl2+wzVOrNLpoXYWmy90UWTqBK7qZN7GX3cidbgBEzMBgpjISFVqrMCFGhQ9zEgvlV01mqsdtmdiWkbovEymMxFqjwrF4yY3QQuEoLI4EjU5VEFdgoFFACV1TOhgijKBvG3Kg6EoTt+3g9AjRwq0NjeKBhwpKNBWFQwIXHDk6AQds+QJR94kGRwRndD8yGgLJuDVIi8MAyJCIxYj00pEByJFKioU+MhGKdBIhlfWR2NKORAzSHjVT49d8LVdh+Pw9BSRI0cQHZC5ZJAfEmIGF0lPPcZVK9H1fE0jUdO1NVtgMzzVW8jy1mAJA4GCChQ3gwcdlEqMqyuBE7keBB4H1N4mE+H4-gBIE4BBMEpOhTk4Dots+SRVF0Uxbkl2wzzthMsSszbIh8yaotspBMsK3pS57lresYKbAUshooqoHo5tfFbDsQANHyIrqxQYFCKMAHkoFSKA4FOeqo3ZWkiCnGdhvnOoIUoQEwE4LarLWja4C85Q5pJPzHoCrBgFVQhwuiYLQrCN7BLq6LTli65bgeJ5koqtKvl+NqSzy9lNpIO9gnGsr7jRVKPiqqyAc2IGRwa9tmpJ+GctLctKx6vqG0GgJhs5dhsRK-kOEoQwkAZmjmZ+UqW3bbbexqgiFpuZbThWghzkya6drHaT9sO+U5zwBcYDOi6roJKWZc2h6lCenUXsNgGPq+gLzYIcIQAAGhAMxFGgMhkFAAN-hhagAwQF2UC9GFmZd+29VmMCAGV2F8OAZU25ACC9Chg6-Qxw4xMB5WQaYSDge24EmnLgSlaCshIdhQIAMW8XxOEUbJkBAdgUYgO2QDqBoAHV4XgbGw59m5lBuEp67AQ4W8yWwYFoMvq7jhOc5AAArMgLjD+VQgARRIIo4Fnv77YxShbHrtvghb0x+pgdvfxgGpkAADh5ff-goduZlMevz4kSgVBbgBHLf4C0DML7BuDxNo5Ryi3Og-88B0CnlkGeSB457xABQXweBM7nXnmQNecBox7nrD6QBVAY47yQXPe2ODsgbwAWQ5BiczLsACFfVgN9kDfHtneEI8oADCEBfCIJAPQNsLdRAABUmG+3ofPJQ2cujZVgGHMA9ZTAwGjECMOMASihF3mFbgQA)
 <!-- prettier-ignore -->
-```sh
---parser html
-```
+
 
 **Input:**
 <!-- prettier-ignore -->
 ```html
-				{#if userPresence.data}
-					{#if userPresence.data.active_on_discord_desktop || userPresence.data.active_on_discord_mobile}
-						{#if userPresence.data.listening_to_spotify}
-							{@html decodeURI(userPresence.data.spotify.track_url)}
-							<div class="flex items-center space-x-2 rounded-md text-white mt-4 space-y-6">
-								<p class="text-sm font-bold text-gray-600 block">I'm Listening too:</p>
-								<br />
-								<img
-									src={userPresence.data.spotify.album_art_url}
-									alt="Album art"
-									class="h-14 w-14 rounded-full flex-shrink-0 -mb-5"
-								/>
+				<h1>Welcome to your new SvelteKit app</h1>
+{#if userPresence.data}
+  {userPresence.data.discord_status}
+  {#if userPresence.data.active_on_discord_desktop || userPresence.data.active_on_discord_mobile}
+    {#if userPresence.data.listening_to_spotify}
+      {@html decodeURI(userPresence.data.spotify.track_url)}
 
-								<div class="text-sm leading-tight">
-									<a
-										href="https://open.spotify.com/track/{userPresence.data.spotify.track_id}"
-										target="_blank"
-										rel="noreferrer"
-									>
-										<span class="block text-green-500">{userPresence.data.spotify.song}</span>
-										<span class="block text-xs">{userPresence.data.spotify.artist}</span>
-									</a>
-									<p class="text-xs">{userPresence.data.spotify.album}</p>
-								</div>
-							</div>
-						{:else}
-							<div class="flex items-center space-x-2 rounded-md text-green-500 mt-4 space-y-6">
-								<div class="h-5 w-5 rounded-full flex-shrink-0 bg-green-500 -mb-5" />
-								<div title="Online" class="text-sm leading-tight truncate">Online</div>
-							</div>
-						{/if}
-					{:else}
-						<div class="flex items-center space-x-2 rounded-md text-neutral-500 mt-4 space-y-6">
-							<div class="h-5 w-5 rounded-full flex-shrink-0 bg-gray-500 dark:bg-gray-200 -mb-5" />
-							<div title="Offline" class="text-sm leading-tight truncate">Offline</div>
-						</div>
-					{/if}
-				{/if}
+      <div class="flex items-center space-x-2 rounded-md text-white mt-4 space-y-6">
+        <p class="text-sm font-bold text-gray-600 block">I'm Listening too:</p>
+        <br />
+        <img
+          src={userPresence.data.spotify.album_art_url}
+          alt="Album art"
+          class="h-10 w-10"
+        />
 
-```
-
-**Output:**
-<!-- prettier-ignore -->
-```html
-{#if userPresence.data} {#if userPresence.data.active_on_discord_desktop ||
-userPresence.data.active_on_discord_mobile} {#if
-userPresence.data.listening_to_spotify} {@html
-decodeURI(userPresence.data.spotify.track_url)}
-<div class="flex items-center space-x-2 rounded-md text-white mt-4 space-y-6">
-  <p class="text-sm font-bold text-gray-600 block">I'm Listening too:</p>
-  <br />
-  <img
-    src="{userPresence.data.spotify.album_art_url}"
-    alt="Album art"
-    class="h-14 w-14 rounded-full flex-shrink-0 -mb-5"
-  />
-
-  <div class="text-sm leading-tight">
-    <a
-      href="https://open.spotify.com/track/{userPresence.data.spotify.track_id}"
-      target="_blank"
-      rel="noreferrer"
-    >
-      <span class="block text-green-500">{userPresence.data.spotify.song}</span>
-      <span class="block text-xs">{userPresence.data.spotify.artist}</span>
-    </a>
-    <p class="text-xs">{userPresence.data.spotify.album}</p>
-  </div>
-</div>
+        <div class="text-sm leading-tight">
+          <a
+            href="https://open.spotify.com/track/{userPresence.data.spotify.track_id}"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span class="block text-green-500">{currentSong}</span>
+            <span class="block text-xs">{userPresence.data.spotify.artist}</span>
+          </a>
+          <p class="text-xs">{userPresence.data.spotify.album}</p>
+        </div>
+      </div>
+    {:else}
+      <div class="flex items-center space-x-2 rounded-md text-green-500 mt-4 space-y-6">
+        <div class="h-2 w-2 bg-green-500 rounded-full inline-block ml-1" />
+        <div title="Online" class="text-sm leading-tight font-bold truncate">🟢 Online</div>
+      </div>
+    {/if}
+  {:else}
+    <div class="flex items-center space-x-2 rounded-md text-green-500 mt-4 space-y-6">
+      <div class="h-2 w-2 bg-green-500 rounded-full inline-block ml-1" />
+      <div title="Online" class="text-sm leading-tight font-bold truncate">🟢 Online</div>
+    </div>
+  {/if}
 {:else}
-<div
-  class="flex items-center space-x-2 rounded-md text-green-500 mt-4 space-y-6"
->
-  <div class="h-5 w-5 rounded-full flex-shrink-0 bg-green-500 -mb-5" />
-  <div title="Online" class="text-sm leading-tight truncate">Online</div>
-</div>
-{/if} {:else}
-<div
-  class="flex items-center space-x-2 rounded-md text-neutral-500 mt-4 space-y-6"
->
-  <div
-    class="h-5 w-5 rounded-full flex-shrink-0 bg-gray-500 dark:bg-gray-200 -mb-5"
-  />
-  <div title="Offline" class="text-sm leading-tight truncate">Offline</div>
-</div>
-{/if} {/if}
+  <div class="flex items-center space-x-2 rounded-md text-neutral-500 mt-4 space-y-6">
+    <div class="h-5 w-5 rounded-full flex-shrink-0 bg-gray-500 dark:bg-gray-200 -mb-5" />
+    <div title="Offline" class="text-sm leading-tight truncate">🔴 Offline</div>
+  </div>
+{/if}
 
 ```
+
+
+
 There you go mah bowah! Pat-yourself on the back, youve did it! Now go below and I will leave you an example of mine other than the pics there, but to show you what your API will look like and you can use it as a referance in-case you want to customize this yourself. 
 
 Mine is mixed with [Tailwind CSS](https://tailwindcss.com/) as well just so you'd know.
@@ -258,7 +204,11 @@ Mine is mixed with [Tailwind CSS](https://tailwindcss.com/) as well just so you'
 
 Questions on my methods... well, post an issue or just re-read from the beginning to retrace your steps. Ay, Im just telling you how I did it and it worked. I had no one to help me so... There were alot of references and ideas. But I also want to thank you for at least reading this far and I hope you enjoy your Presence!
 
-If you have another way or would like to add your own way to this repo and share with us all, please feel free to Fork a copy and 
+## Contribute
+
+If you have another way or would like to add your own way to this repo and share with us all, please feel free to:
+[Fork](https://github.com/codemikko/Svelteyard/fork) a copy
+Create a **new branch** for this commit and start a pull request.  [Learn more about pull requests.](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests)
 
 
 > 
